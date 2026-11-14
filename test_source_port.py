@@ -108,6 +108,33 @@ class NativeTests(unittest.TestCase):
   p=Param(r);self.n.request(p);self.assertEqual(p.result,'untouched')
  def test_unload_stops_callbacks_and_clears_handles(self):
   self.n.handles=[1,2,3];self.n.stop();self.assertEqual(self.unhooks,[3,2,1]);self.assertFalse(self.n.active);self.assertEqual(self.n.handles,[])
+ def test_registration_uses_chaquopy_class_object(self):
+  from unittest.mock import patch
+  registered=[]
+  method=types.SimpleNamespace(getName=lambda:'target',getParameterTypes=lambda:[1,2],setAccessible=lambda value:None)
+  reflected=types.SimpleNamespace(getDeclaredMethods=lambda:[method])
+  class Wrapper:
+   @staticmethod
+   def getClass():return reflected
+  self.plugin.hook_method=lambda m,cb:registered.append(m) or 'handle'
+  with patch.object(self.native,'find_class',return_value=Wrapper):
+   self.n.hook('sample.JavaClass','target',counts={2})
+  self.assertEqual(registered,[method]);self.assertEqual(self.n.handles,['handle']);self.assertEqual(self.n.failures,[])
+ def test_registration_accepts_raw_reflection_class(self):
+  from unittest.mock import patch
+  method=types.SimpleNamespace(getName=lambda:'target',getParameterTypes=lambda:[],setAccessible=lambda value:None)
+  reflected=types.SimpleNamespace(getDeclaredMethods=lambda:[method])
+  self.plugin.hook_method=lambda m,cb:'handle'
+  with patch.object(self.native,'find_class',return_value=reflected):self.n.hook('sample.JavaClass','target',counts={0})
+  self.assertEqual(self.n.handles,['handle']);self.assertEqual(self.n.failures,[])
+ def test_reflection_error_does_not_abort_other_hooks(self):
+  from unittest.mock import patch
+  class Broken:
+   @staticmethod
+   def getClass():raise RuntimeError('unavailable')
+  with patch.object(self.native,'find_class',return_value=Broken):self.n.hook('broken','target')
+  self.assertIn('reflection failed: unavailable',self.n.failures[0])
+  self.n.hook('missing','other');self.assertEqual(len(self.n.failures),2)
  def test_registration_failure_is_reported(self):
   self.n.hook('missing','x');self.assertIn('class missing',self.n.failures[0])
 

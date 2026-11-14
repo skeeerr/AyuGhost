@@ -1,7 +1,7 @@
 {
   "id": "ayughost_source_test",
   "name": "AyuGhost · Source Test",
-  "version": "1.0",
+  "version": "1.0.1",
   "description": "Тестовый Python-перенос AyuGhost без DEX. Функции и ограничения перечислены в KNOWN_LIMITATIONS.md.",
   "author": "@internetmodel | @skerbio",
   "icon": "pfsdpsfdpsdfpfsd_by_fStikBot/2",

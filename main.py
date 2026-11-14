@@ -20,7 +20,7 @@ from native import Native,field,put,account,dialog,message_id,deserialize,Task
 # This preview has its own identity and data copy; it cannot replace the working DEX build.
 __id__='ayughost_source_test'
 __name__='AyuGhost · Source Test'
-__version__='1.0'
+__version__='1.0.1'
 __icon__='pfsdpsfdpsdfpfsd_by_fStikBot/2'
 LEGACY={'ghostEnabled':'ghost_mode_enabled','hideOnline':'hide_online','immediateOffline':'immediate_offline','hideTyping':'hide_typing','hideReading':'hide_reading','noReadStories':'no_read_stories','readOnInteract':'read_on_interact','useSchedule':'use_schedule','ghostMenuButton':'add_ghost_to_drawer','sendSilenceValue':'send_silence','saveDeleted':'save_deleted_messages','saveManuallyDeleted':'save_manually_deleted','saveOneTime':'save_one_time_messages','saveEdits':'save_edited_messages','redDeletedMark':'red_mark','translucentDeleted':'translucent_deleted','deletedMark':'custom_prefix','localPremium':'local_premium','noForwards':'no_forward','ignoreFlagSecure':'remove_flag_secure','filtersEnabled':'filters_enabled'}
 

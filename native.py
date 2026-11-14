@@ -96,10 +96,18 @@ class Native:
             if now-self.errors.get(label,-60)>=30:
                 self.errors[label]=now;self.p.log('AyuGhost '+label+': '+str(e))
     def hook(self,clazz,method,before=None,after=None,counts=None):
-        c=find_class(clazz)
-        if c is None:self.failures.append(clazz+'.'+method+': class missing');return
+        try:
+            c=find_class(clazz)
+            if c is None:
+                self.failures.append(clazz+'.'+method+': class missing');return
+            # Chaquopy exposes Java types as Python classes. Reflection belongs
+            # to their java.lang.Class object, obtained with getClass().
+            reflected=c.getClass() if isinstance(c,type) else c
+            methods=reflected.getDeclaredMethods()
+        except Exception as e:
+            self.failures.append(clazz+'.'+method+': reflection failed: '+str(e));return
         callback=Callback(self,before,after);matched=0
-        for m in c.getDeclaredMethods():
+        for m in methods:
             if str(m.getName())!=method:continue
             if counts is not None and len(m.getParameterTypes()) not in counts:continue
             try:
